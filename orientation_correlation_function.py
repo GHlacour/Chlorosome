@@ -77,6 +77,8 @@ for i in range (l):
             if np.isnan(theta[j])=='True':
          ### This is probably fine. Probably the dot product above may be slightly larger than 1 due to numerical errors
          ### You could calculate the dot product first and if it is larger than 1 then you set theta equal to zero
+         ### Alternatively you can choose not to calculate the angle as cos(theta) is the dot product
+         ### p[j]=p[j]+0.2*(3.*np.dot(TDM[i],TDM[j+i])**2-1)/(1./(l+1-j))
                 theta[j]=0
   #              p[j]=(1/(l+1-j))*(1/5)*(3*(np.cos(alpha)**2)-1) ### I think this line should be:
   #              p[j]=p[j]+(1./(l+1-j))*(1./5.)*(3.*(np.cos(alpha)**2)-1)
