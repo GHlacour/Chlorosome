@@ -76,7 +76,7 @@ for ts in u.trajectory[0:501:1]:
                 r_d_a_intensity  = np.linalg.norm (r_d_a)
                         
                         #Molecule i as acceptor
-                r_a_d =Acceptor_positions [i]-Donor_positions [j] 
+                r_a_d =Donor_positions [j] - Acceptor_positions [i]
                 r_a_d_intensity  = np.linalg.norm (r_a_d )          
                 #print (r_a_d_intensity)
                         
