@@ -55,7 +55,7 @@ for ts in u.trajectory[0:501:1]:
 #Qy transition dipole moment: magnitude and direction information
     NC_NA_distance = NC_positions - NA_positions
 #print ('Distances between the NA and NC', NC_NA_distance)
-
+### You can simplify your life here by not multiplying with tdm_length as TDM will then be length 1
     tdm_length=5.48 #Debye
     i=2558
     unit_transition_dipole=tdm_length*NC_NA_distance[i]/np.linalg.norm(NC_NA_distance[i])
@@ -64,19 +64,26 @@ for ts in u.trajectory[0:501:1]:
 
 orientation_correlation_function =np.zeros ((l,l))
 angles=np.zeros((l,l))
+# Loop over starting points
 for i in range (l):
     p=np.zeros(l) 
     theta=np.zeros(l)
+    # Loop over gaps
     for j in range (0,l-i):
-            theta[j]=np.arccos(np.dot(TDM[i],TDM[j])/(np.linalg.norm (TDM[i])*np.linalg.norm (TDM[j])))
-            #since I observed appearance of the nun values in matrix of angles I tried to fix them in this way
+     ### If you used lenght 1 of TDM above, you can leave out the norms below.
+            theta[j]=np.arccos(np.dot(TDM[i],TDM[j])/(np.linalg.norm (TDM[i])*np.linalg.norm (TDM[j]))) ### I think this should be
+            theta[j]=np.arccos(np.dot(TDM[i],TDM[j+i])/(np.linalg.norm (TDM[i])*np.linalg.norm (TDM[j+i])))
+           #since I observed appearance of the nun values in matrix of angles I tried to fix them in this way
             if np.isnan(theta[j])=='True':
-                alpha=0
-                p[j]=(1/(l+1-j))*(1/5)*(3*(np.cos(alpha)**2)-1)
-            else:
+         ### This is probably fine. Probably the dot product above may be slightly larger than 1 due to numerical errors
+         ### You could calculate the dot product first and if it is larger than 1 then you set theta equal to zero
+                theta[j]=0
+  #              p[j]=(1/(l+1-j))*(1/5)*(3*(np.cos(alpha)**2)-1) ### I think this line should be:
+  #              p[j]=p[j]+(1./(l+1-j))*(1./5.)*(3.*(np.cos(alpha)**2)-1)
+ #           else:
+   #             p[j]=(1/(l+1-j))*(1/5)*(3*(np.cos(theta[j])**2)-1) ### I think this line should be:
+            p[j]=p[j]+(1./(l+1-j))*(1./5.)*(3.*(np.cos(theta[j])**2)-1)
                 
-                
-                p[j]=(1/(l+1-j))*(1/5)*(3*(np.cos(theta[j])**2)-1)
 
     angles[i,:]=theta
     orientation_correlation_function [i,:]=p
